@@ -14,7 +14,12 @@ module.exports = {
     'prettier/@typescript-eslint',
   ],
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': [
+      'error',
+      {},
+      // eslint-disable-next-line global-require
+      require('./.prettierrc'),
+    ],
     'arrow-body-style': 'off',
     'prefer-arrow-callback': 'off',
     'sort-keys': 'off',
