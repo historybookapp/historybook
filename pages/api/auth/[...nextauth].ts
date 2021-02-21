@@ -3,6 +3,7 @@ import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
 import Adapters from 'next-auth/adapters'
 import { PrismaClient } from '@prisma/client'
+import hashids from '../../../common/hashids'
 
 const prisma = new PrismaClient()
 
@@ -19,6 +20,22 @@ const handler: NextApiHandler = (req, res) =>
       signIn: '/auth/signin',
       verifyRequest: '/auth/verify-request',
     },
+    callbacks: {
+      async session(session, user) {
+        // eslint-disable-next-line no-param-reassign
+        session.user.hid = hashids.encode((user as any).id as number)
+        return session
+      },
+    },
   })
 
 export default handler
+
+declare module 'next-auth' {
+  export interface User {
+    hid: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+  }
+}

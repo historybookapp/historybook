@@ -1,13 +1,13 @@
-import { NextPage } from 'next'
+import { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
-import { useState } from 'react'
 import tw, { css } from 'twin.macro'
 import { useSession, signIn, csrfToken } from 'next-auth/client'
 import { Input, Button, FormControl, FormErrorMessage } from '@chakra-ui/react'
 import { Formik, Form, Field } from 'formik'
-import httpClient from '../../common/http'
 
-const Page: NextPage<{ csrfToken: string }> = (props) => {
+const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
+  props,
+) => {
   function validateEmail(value: string): string | undefined {
     let error
     if (!value) {
@@ -79,9 +79,13 @@ const Page: NextPage<{ csrfToken: string }> = (props) => {
   )
 }
 
-Page.getInitialProps = async (context) => {
+export const getServerSideProps: GetServerSideProps<{
+  csrfToken: string
+}> = async (context) => {
   return {
-    csrfToken: await csrfToken(context),
+    props: {
+      csrfToken: await csrfToken(context),
+    },
   }
 }
 

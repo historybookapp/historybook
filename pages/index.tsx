@@ -50,13 +50,12 @@ const Page: NextPage = () => {
         align-items: center;
       `}>
       <Head>
-        <title>Storybook</title>
+        <title>Historybook</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main
         css={css`
-          padding: 5rem 0;
           flex: 1;
           display: flex;
           flex-direction: column;
@@ -70,8 +69,8 @@ const Page: NextPage = () => {
             font-size: 4rem;
           `}>
           Welcome to{' '}
-          <Text tw="font-bold" color="brand.orange" as="span">
-            Storybook
+          <Text tw="font-bold" color="brand.400" as="span">
+            Historybook
           </Text>
         </h1>
 

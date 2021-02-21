@@ -64,3 +64,49 @@ model VerificationRequest {
 
   @@map(name: "verification_requests")
 }
+
+model Record {
+  id Int @default(autoincrement()) @id
+  createdAt  DateTime  @default(now()) @map(name: "created_at")
+  updatedAt  DateTime  @default(now()) @map(name: "updated_at")
+  userId       Int      @map(name: "user_id")
+  domain String
+  url String
+  title String
+  description String?
+  favicon String?
+  tags Tag[] @relation(references: [id])
+  media Media[]
+
+  @@index([domain], name: "domain")
+  @@index([userId], name: "userId")
+  @@map(name: "records")
+}
+
+model Tag {
+  id Int @default(autoincrement()) @id
+  createdAt  DateTime  @default(now()) @map(name: "created_at")
+  updatedAt  DateTime  @default(now()) @map(name: "updated_at")
+  name String
+  userId Int @map(name: "user_id")
+  records Record[] @relation(references: [id])
+
+  @@map(name: "tags")
+}
+
+model Media {
+  id Int @default(autoincrement()) @id
+  createdAt  DateTime  @default(now()) @map(name: "created_at")
+  updatedAt  DateTime  @default(now()) @map(name: "updated_at")
+  userId       Int      @map(name: "user_id")
+  name String
+  source String
+  mediaType MediaType
+
+  @@map(name: "media")
+}
+
+enum MediaType {
+  image
+  video
+}
