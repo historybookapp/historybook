@@ -25,7 +25,6 @@ const postHandler: NextApiHandler = async (req, res) => {
       }),
     ),
   })
-
   const value = await schema.validateAsync(req.body)
   const { media } = value
   const { hid } = session.user

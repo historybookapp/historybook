@@ -42,7 +42,8 @@ export default function handlerWrapper(
       } else {
         res.status(500).send({
           code: 1,
-          message: err,
+          message: typeof err === 'string' ? err : undefined,
+          data: typeof err !== 'string' && err,
         })
       }
     }

@@ -38,11 +38,25 @@ const RecordItem: FC<Props> = (props) => {
         `}>
         <Box d="flex" flexDirection="column" overflow="hidden">
           <Box fontWeight="semibold" as="h4" className="record-title">
-            {record.title}
+            <span>{record.title}</span>
           </Box>
 
-          <Box mt={1} fontSize="sm" color="gray.700" isTruncated>
-            {record.domain} · {dayjs(record.createdAt).fromNow()}
+          <Box
+            mt={2}
+            fontSize="sm"
+            color="gray.700"
+            isTruncated
+            d="flex"
+            flexDir="row"
+            alignItems="center">
+            {record.favicon && (
+              <AspectRatio w="18px" h="18px" ratio={1} mr={1}>
+                <Image src={record.favicon} objectFit="cover" />
+              </AspectRatio>
+            )}
+            <span>
+              {record.domain} · {dayjs(record.createdAt).fromNow()}
+            </span>
           </Box>
 
           {record.description && <Box mt={2}>{record.description}</Box>}
