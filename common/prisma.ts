@@ -1,6 +1,10 @@
 import { PrismaClient, Prisma } from '@prisma/client'
 
-const prisma = new PrismaClient()
+import { singletonSync } from './singleton'
+
+const prisma = singletonSync('prisma', () => {
+  return new PrismaClient()
+})
 
 export default prisma
 export { Prisma }

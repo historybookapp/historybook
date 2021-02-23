@@ -4,7 +4,7 @@ import { NextApiHandler } from 'next'
 import { getSession } from 'next-auth/client'
 import ogs from 'open-graph-scraper'
 
-import handlerWrapper, { sendOk } from '../../../common/handlerWrapper'
+import handlerWrapper, { sendOk } from '../../../common/handler-wrapper'
 import { getImages } from '../../../common/open-graph'
 import { LookUpWebMedium, LookUpWebResponse } from '../../../types/api'
 
@@ -24,7 +24,7 @@ const getHandler: NextApiHandler = async (req, res) => {
 
   const imageList: LookUpWebMedium[] | undefined = og.result.ogImage
     ? getImages(url, og.result.ogImage)
-    : undefined
+    : []
   const result: LookUpWebResponse = {
     domain: site.hostname,
     url,

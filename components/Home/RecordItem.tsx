@@ -5,23 +5,35 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import tw, { css } from 'twin.macro'
 
 import { Prisma } from '../../common/prisma'
+import { LookUpWebResponse } from '../../types/api'
 
 dayjs.extend(relativeTime)
 
 interface Props {
-  record: Prisma.RecordGetPayload<{
-    include: {
-      media: true
-      tags: true
-    }
-  }> & { hid: string }
+  record:
+    | Prisma.RecordGetPayload<{
+        include: {
+          media: true
+          tags: true
+        }
+      }>
+    | LookUpWebResponse
+  clickable?: boolean
 }
 
-const RecordItem: FC<Props> = (props) => {
-  const { record } = props
+const RecordItem: FC<Props> = ({ record, clickable = true }) => {
+  function Wrapper({ children }) {
+    return clickable ? (
+      <a href={record.url} target="__blank" rel="noreferrer">
+        {children}
+      </a>
+    ) : (
+      <>{children}</>
+    )
+  }
 
   return (
-    <a href={record.url} target="__blank" rel="noreferrer">
+    <Wrapper>
       <Box
         px={4}
         py={3}
@@ -31,12 +43,15 @@ const RecordItem: FC<Props> = (props) => {
         borderRadius="lg"
         overflow="hidden"
         d="flex"
-        css={css`
-          &:hover .record-title {
-            text-decoration: underline;
-          }
-        `}>
-        <Box d="flex" flexDirection="column" overflow="hidden">
+        css={[
+          clickable &&
+            css`
+              &:hover .record-title {
+                text-decoration: underline;
+              }
+            `,
+        ]}>
+        <Box d="flex" flexDirection="column" overflow="hidden" w="100%">
           <Box fontWeight="semibold" as="h4" className="record-title">
             <span>{record.title}</span>
           </Box>
@@ -50,12 +65,13 @@ const RecordItem: FC<Props> = (props) => {
             flexDir="row"
             alignItems="center">
             {record.favicon && (
-              <AspectRatio w="18px" h="18px" ratio={1} mr={1}>
+              <AspectRatio w="16px" h="16px" ratio={1} mr={2}>
                 <Image src={record.favicon} objectFit="cover" />
               </AspectRatio>
             )}
             <span>
-              {record.domain} · {dayjs(record.createdAt).fromNow()}
+              {record.domain}
+              {record.createdAt && ` · ${dayjs(record.createdAt).fromNow()}`}
             </span>
           </Box>
 
@@ -76,7 +92,7 @@ const RecordItem: FC<Props> = (props) => {
           undefined
         )}
       </Box>
-    </a>
+    </Wrapper>
   )
 }
 

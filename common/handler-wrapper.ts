@@ -54,8 +54,5 @@ export const sendOk = (
   res: NextApiResponse,
   payload?: Record<any, any>,
 ): void => {
-  res.send({
-    code: 0,
-    data: payload,
-  })
+  res.send(payload || {})
 }

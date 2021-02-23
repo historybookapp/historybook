@@ -4,7 +4,7 @@ import { getSession } from 'next-auth/client'
 import joi from 'joi'
 import _ from 'lodash'
 
-import handlerWrapper, { sendOk } from '../../../common/handlerWrapper'
+import handlerWrapper, { sendOk } from '../../../common/handler-wrapper'
 import hashids from '../../../common/hashids'
 import prisma, { Prisma } from '../../../common/prisma'
 import { sanitizeRecord } from '../../../common/utils'
@@ -65,9 +65,9 @@ const getHandler: NextApiHandler = async (req, res) => {
   const session = await getSession({ req })
   const { hid } = session.user
   const userId = hashids.decode(hid)
-  const { lastRecordHid, size = 20 } = req.query
-  const lastRecordId = lastRecordHid
-    ? hashids.decode(lastRecordHid as string)
+  const { nextCursor, size = 20 } = req.query
+  const nextRecordId = nextCursor
+    ? hashids.decode(nextCursor as string)
     : undefined
 
   const findRecords = await prisma.record.findMany({
@@ -75,10 +75,10 @@ const getHandler: NextApiHandler = async (req, res) => {
       userId,
     },
     take: Number(size),
-    skip: lastRecordId ? 1 : 0,
-    cursor: lastRecordId
+    skip: nextRecordId ? 1 : 0,
+    cursor: nextRecordId
       ? {
-          id: lastRecordId,
+          id: nextRecordId,
         }
       : undefined,
     orderBy: {
@@ -100,11 +100,12 @@ const getHandler: NextApiHandler = async (req, res) => {
     },
   })
 
+  const list = findRecords.map((record) => sanitizeRecord(record))
+  const isFullSize = list.length === Number(size)
+
   sendOk(res, {
-    list: findRecords.map((record) => sanitizeRecord(record)),
-    lastRecordHid: findRecords.length
-      ? hashids.encode(_.last(findRecords).id)
-      : undefined,
+    list,
+    nextCursor: list.length && isFullSize ? _.last(list).hid : undefined,
   })
 }
 
