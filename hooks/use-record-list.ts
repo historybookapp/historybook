@@ -25,9 +25,9 @@ export default function useRecordList() {
         tags: true
       }
     }> & { hid: string })[]
-    nextCursor: string
+    nextCursor: string | null
   }>('recordList', fetchRecordList, {
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? false,
     refetchOnWindowFocus: false,
   })
 

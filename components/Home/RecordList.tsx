@@ -16,9 +16,8 @@ const RecordList: FC = () => {
     <>
       {data && (
         <VStack spacing={5} alignItems="stretch">
-          {data.pages.map((group, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Fragment key={i}>
+          {data.pages.map((group) => (
+            <Fragment key={group.nextCursor}>
               {group.list.map((record) => {
                 return <RecordItem key={record.hid} record={record} />
               })}

@@ -105,7 +105,7 @@ const getHandler: NextApiHandler = async (req, res) => {
 
   sendOk(res, {
     list,
-    nextCursor: list.length && isFullSize ? _.last(list).hid : undefined,
+    nextCursor: list.length && isFullSize ? _.last(list).hid : null,
   })
 }
 

@@ -21,19 +21,23 @@ interface Props {
   clickable?: boolean
 }
 
-const RecordItem: FC<Props> = ({ record, clickable = true }) => {
-  function Wrapper({ children }) {
-    return clickable ? (
-      <a href={record.url} target="__blank" rel="noreferrer">
-        {children}
-      </a>
-    ) : (
-      <>{children}</>
-    )
-  }
+const Wrapper: FC<{ clickable: boolean; url: string }> = ({
+  children,
+  clickable,
+  url,
+}) => {
+  return clickable ? (
+    <a href={url} target="__blank" rel="noreferrer">
+      {children}
+    </a>
+  ) : (
+    <>{children}</>
+  )
+}
 
+const RecordItem: FC<Props> = ({ record, clickable = true }) => {
   return (
-    <Wrapper>
+    <Wrapper clickable={clickable} url={record.url}>
       <Box
         px={4}
         py={3}

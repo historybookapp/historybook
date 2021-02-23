@@ -13,11 +13,21 @@ const Page: NextPage = () => {
         <title>Home</title>
       </Head>
 
-      <div tw="w-full max-w-7xl mx-auto flex flex-1 space-x-7 overflow-hidden">
-        <Box w="300px" h="100%" overflowY="scroll" p={7}>
-          <p>side bar</p>
+      <div tw="w-full max-w-7xl mx-auto flex">
+        <Box
+          position="sticky"
+          top="6rem"
+          w="300px"
+          h="100%"
+          overflowY="scroll"
+          p={6}
+          css={css`
+            height: calc(((100vh - 1.5rem) - 64px) - 42px);
+            overscroll-behavior: contain;
+          `}>
+          <p>Side bar</p>
         </Box>
-        <Box flex="1" h="100%" overflowY="scroll" p={7}>
+        <Box flex="1" overflowY="scroll" tw="px-4 sm:px-6 xl:px-8 pt-10 pb-10">
           <Heading as="h2" size="md">
             My History
           </Heading>
