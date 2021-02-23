@@ -6,7 +6,9 @@ import { Prisma } from '../common/prisma'
 const pageSize = 15
 const fetchRecordList = ({ pageParam }: { pageParam?: string }) =>
   fetcher(
-    `/records?size=${pageSize}${pageParam ? `&nextCursor=${pageParam}` : ''}`,
+    `/records?scene=card&size=${pageSize}${
+      pageParam ? `&nextCursor=${pageParam}` : ''
+    }`,
   )
 
 export default function useRecordList() {

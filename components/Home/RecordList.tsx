@@ -8,6 +8,7 @@ const RecordList: FC = () => {
   const {
     data,
     fetchNextPage,
+    isFetching,
     isFetchingNextPage,
     hasNextPage,
   } = useRecordList()
@@ -33,7 +34,7 @@ const RecordList: FC = () => {
         onClick={() => fetchNextPage()}
         disabled={isFetchingNextPage || !hasNextPage}>
         {/* eslint-disable-next-line no-nested-ternary */}
-        {isFetchingNextPage
+        {isFetching
           ? 'Loading...'
           : !hasNextPage
           ? 'No more records'

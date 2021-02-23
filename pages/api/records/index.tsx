@@ -8,6 +8,7 @@ import handlerWrapper, { sendOk } from '../../../common/handler-wrapper'
 import hashids from '../../../common/hashids'
 import prisma, { Prisma } from '../../../common/prisma'
 import { sanitizeRecord } from '../../../common/utils'
+import { MediaScene } from '../../../types/api'
 
 const postHandler: NextApiHandler = async (req, res) => {
   const session = await getSession({ req })
@@ -21,6 +22,7 @@ const postHandler: NextApiHandler = async (req, res) => {
       joi.object({
         name: joi.string().required(),
         source: joi.string().required(),
+        url: joi.string(),
         mediaType: joi.string().valid('image', 'video'),
       }),
     ),
@@ -36,6 +38,7 @@ const postHandler: NextApiHandler = async (req, res) => {
       create: media.map((medium) => ({
         userId,
         ...medium,
+        url: undefined,
       })),
     },
   }
@@ -58,14 +61,14 @@ const postHandler: NextApiHandler = async (req, res) => {
     },
   })
 
-  sendOk(res, sanitizeRecord(createRecord))
+  sendOk(res, sanitizeRecord(createRecord, 'card'))
 }
 
 const getHandler: NextApiHandler = async (req, res) => {
   const session = await getSession({ req })
   const { hid } = session.user
   const userId = hashids.decode(hid)
-  const { nextCursor, size = 20 } = req.query
+  const { nextCursor, size = 20, scene = 'card' } = req.query
   const nextRecordId = nextCursor
     ? hashids.decode(nextCursor as string)
     : undefined
@@ -100,7 +103,9 @@ const getHandler: NextApiHandler = async (req, res) => {
     },
   })
 
-  const list = findRecords.map((record) => sanitizeRecord(record))
+  const list = findRecords.map((record) =>
+    sanitizeRecord(record, scene as MediaScene),
+  )
   const isFullSize = list.length === Number(size)
 
   sendOk(res, {

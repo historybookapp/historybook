@@ -10,6 +10,9 @@ export interface LookUpWebResponse {
 
 export interface LookUpWebMedium {
   source: string
+  url?: string
   name?: string
   mediaType: 'image' | 'video'
 }
+
+export type MediaScene = 'card'

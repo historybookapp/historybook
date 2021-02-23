@@ -25,6 +25,7 @@
     "formik": "^2.2.6",
     "framer-motion": "^3.6.2",
     "hashids": "^2.2.8",
+    "imgproxy": "^0.1.2",
     "joi": "^17.4.0",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",

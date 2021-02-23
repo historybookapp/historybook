@@ -1,11 +1,12 @@
 import { FC } from 'react'
-import { Box, AspectRatio, Image } from '@chakra-ui/react'
+import { Box, AspectRatio } from '@chakra-ui/react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import tw, { css } from 'twin.macro'
 
 import { Prisma } from '../../common/prisma'
-import { LookUpWebResponse } from '../../types/api'
+import { LookUpWebMedium, LookUpWebResponse } from '../../types/api'
+import Image from '../Image'
 
 dayjs.extend(relativeTime)
 
@@ -86,7 +87,10 @@ const RecordItem: FC<Props> = ({ record, clickable = true }) => {
           <Box flex={1} ml={4}>
             <AspectRatio w="180px" ratio={4 / 3}>
               <Image
-                src={record.media[0].source}
+                src={
+                  (record.media[0] as LookUpWebMedium).url ||
+                  record.media[0].source
+                }
                 alt={record.media[0].name}
                 objectFit="cover"
               />
