@@ -7,7 +7,6 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
   Button,
   HStack,
   FormControl,
@@ -90,7 +89,6 @@ const AddRecordModal: FC<Props> = ({ isOpen, onClose }) => {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Add New Record</ModalHeader>
-        <ModalCloseButton />
 
         <Formik
           validateOnBlur={false}
@@ -116,6 +114,7 @@ const AddRecordModal: FC<Props> = ({ isOpen, onClose }) => {
                         <Input
                           {...field}
                           autoComplete="off"
+                          isRequired
                           autoFocus
                           type="url"
                           placeholder="https://example.com"
@@ -134,7 +133,7 @@ const AddRecordModal: FC<Props> = ({ isOpen, onClose }) => {
               </ModalBody>
 
               <ModalFooter>
-                <HStack spacing={2}>
+                <HStack spacing={3}>
                   <Button
                     variant="ghost"
                     onClick={f.submitForm}

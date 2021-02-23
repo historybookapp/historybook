@@ -2,16 +2,17 @@ import { FC, Fragment } from 'react'
 import { VStack, Button } from '@chakra-ui/react'
 
 import useRecordList from '../../hooks/use-record-list'
+import { SearchParams } from '../../types/api'
 import RecordItem from './RecordItem'
 
-const RecordList: FC = () => {
+const RecordList: FC<{ searchParams: SearchParams }> = ({ searchParams }) => {
   const {
     data,
     fetchNextPage,
     isFetching,
     isFetchingNextPage,
     hasNextPage,
-  } = useRecordList()
+  } = useRecordList(searchParams)
 
   return (
     <>

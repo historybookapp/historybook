@@ -15,4 +15,8 @@ export interface LookUpWebMedium {
   mediaType: 'image' | 'video'
 }
 
+export interface SearchParams {
+  keyword?: string
+}
+
 export type MediaScene = 'card'

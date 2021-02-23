@@ -29,7 +29,7 @@ const NavBar: FC = () => {
           <IconButton
             onClick={() => onOpen()}
             colorScheme="brand"
-            aria-label="Search database"
+            aria-label="SearchBox database"
             fontSize="25px"
             borderRadius="10px"
             icon={<PlusSquareIcon />}

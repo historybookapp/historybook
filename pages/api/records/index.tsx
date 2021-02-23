@@ -68,7 +68,20 @@ const getHandler: NextApiHandler = async (req, res) => {
   const session = await getSession({ req })
   const { hid } = session.user
   const userId = hashids.decode(hid)
-  const { nextCursor, size = 20, scene = 'card' } = req.query
+  const schema = joi.object({
+    nextCursor: joi.string(),
+    size: joi
+      .number()
+      .min(0)
+      .default(20),
+    scene: joi
+      .string()
+      .valid('card')
+      .default('card'),
+    keyword: joi.string(),
+  })
+  const query = await schema.validateAsync(req.query)
+  const { nextCursor, size, scene, keyword } = query
   const nextRecordId = nextCursor
     ? hashids.decode(nextCursor as string)
     : undefined
@@ -76,8 +89,29 @@ const getHandler: NextApiHandler = async (req, res) => {
   const findRecords = await prisma.record.findMany({
     where: {
       userId,
+      ...(keyword
+        ? {
+            OR: [
+              {
+                title: {
+                  contains: keyword,
+                },
+              },
+              {
+                description: {
+                  contains: keyword,
+                },
+              },
+              {
+                domain: {
+                  contains: keyword,
+                },
+              },
+            ],
+          }
+        : undefined),
     },
-    take: Number(size),
+    take: size,
     skip: nextRecordId ? 1 : 0,
     cursor: nextRecordId
       ? {
