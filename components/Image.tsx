@@ -11,8 +11,8 @@ const Fallback: FC = () => {
   return (
     <Center bg="white" color="brand.500">
       <span tw="relative flex h-3 w-3">
-        <span tw="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
-        <span tw="relative inline-flex rounded-full h-3 w-3 bg-yellow-500"></span>
+        <span tw="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75" />
+        <span tw="relative inline-flex rounded-full h-3 w-3 bg-yellow-500" />
       </span>
     </Center>
   )

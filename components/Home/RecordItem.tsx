@@ -97,9 +97,7 @@ const RecordItem: FC<Props> = ({ record, clickable = true }) => {
               />
             </AspectRatio>
           </Box>
-        ) : (
-          undefined
-        )}
+        ) : undefined}
       </Box>
     </Wrapper>
   )

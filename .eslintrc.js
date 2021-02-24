@@ -3,23 +3,18 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './tsconfig.eslint.json',
+    ecmaFeatures: { jsx: true },
+    ecmaVersion: 2020,
   },
-  plugins: ['@typescript-eslint'],
+  plugins: ['react', 'react-hooks', 'jsx-a11y', '@typescript-eslint'],
   extends: [
-    '@ijsto',
+    'airbnb',
     'airbnb-typescript',
     'plugin:@typescript-eslint/recommended',
-    'prettier',
-    'prettier/react',
-    'prettier/@typescript-eslint',
+    'plugin:prettier/recommended',
   ],
   rules: {
-    'prettier/prettier': [
-      'error',
-      {},
-      // eslint-disable-next-line global-require
-      require('./.prettierrc'),
-    ],
+    'prettier/prettier': 'error',
     'arrow-body-style': 'off',
     'prefer-arrow-callback': 'off',
     'sort-keys': 'off',

@@ -70,14 +70,8 @@ const getHandler: NextApiHandler = async (req, res) => {
   const userId = hashids.decode(hid)
   const schema = joi.object({
     nextCursor: joi.string(),
-    size: joi
-      .number()
-      .min(0)
-      .default(20),
-    scene: joi
-      .string()
-      .valid('card')
-      .default('card'),
+    size: joi.number().min(0).default(20),
+    scene: joi.string().valid('card').default('card'),
     keyword: joi.string(),
   })
   const query = await schema.validateAsync(req.query)

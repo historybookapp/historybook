@@ -74,9 +74,7 @@ const Page: NextPage = () => {
                   <Text>
                     <b>Keyword:</b> {searchParams.keyword}
                   </Text>
-                ) : (
-                  undefined
-                )}
+                ) : undefined}
               </Box>
 
               <Button onClick={() => onClearSearch()} variant="ghost">
