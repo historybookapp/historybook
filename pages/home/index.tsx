@@ -30,22 +30,24 @@ const Page: NextPage = () => {
         <title>Home</title>
       </Head>
 
-      <div tw="w-full max-w-7xl mx-auto flex">
+      <div tw="w-full max-w-7xl mx-auto flex md:px-4">
         <Box
           position="sticky"
           top="6rem"
           w="300px"
           h="100%"
           overflowY="scroll"
-          p={6}
-          css={css`
-            height: calc(((100vh - 1.5rem) - 64px) - 42px);
-            overscroll-behavior: contain;
-          `}>
+          css={[
+            tw`hidden md:block py-6 pl-2 pr-6`,
+            css`
+              height: calc(((100vh - 1.5rem) - 64px) - 42px);
+              overscroll-behavior: contain;
+            `,
+          ]}>
           <p>Side bar</p>
         </Box>
 
-        <Box flex="1" overflowY="scroll" tw="px-4 sm:px-6 xl:px-8 pt-10 pb-10">
+        <Box flex="1" overflowY="scroll" tw="pr-6 md:pr-2 pl-6 pt-10 pb-10">
           <Heading
             as="h2"
             size="md"

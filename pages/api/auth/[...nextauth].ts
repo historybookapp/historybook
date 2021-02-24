@@ -2,10 +2,9 @@ import { NextApiHandler } from 'next'
 import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
 import Adapters from 'next-auth/adapters'
-import { PrismaClient } from '@prisma/client'
-import hashids from '../../../common/hashids'
 
-const prisma = new PrismaClient()
+import hashids from '../../../common/hashids'
+import prisma from '../../../common/prisma'
 
 const handler: NextApiHandler = (req, res) =>
   NextAuth(req, res, {

@@ -20,7 +20,7 @@ const NavBar: FC = () => {
       right={0}
       backgroundColor="white"
       tw="shadow z-30">
-      <nav tw="w-full max-w-7xl mx-auto px-7 flex justify-between items-center">
+      <nav tw="w-full max-w-7xl mx-auto px-6 flex justify-between items-center">
         <Heading as="div" size="md" fontWeight="bold" color="brand.500">
           Historybook
         </Heading>
