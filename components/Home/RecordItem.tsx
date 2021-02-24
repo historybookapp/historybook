@@ -84,7 +84,7 @@ const RecordItem: FC<Props> = ({ record, clickable = true }) => {
         </Box>
 
         {record.media.length ? (
-          <Box flex={1} ml={4}>
+          <Box flex={1} ml={4} d="flex" alignItems="center">
             <AspectRatio w="180px" ratio={4 / 3}>
               <Image
                 src={
@@ -92,7 +92,8 @@ const RecordItem: FC<Props> = ({ record, clickable = true }) => {
                   record.media[0].source
                 }
                 alt={record.media[0].name}
-                objectFit="cover"
+                objectFit="contain"
+                align="center"
               />
             </AspectRatio>
           </Box>
