@@ -77,6 +77,7 @@ model Record {
   favicon String?      @db.Text
   tags Tag[]           @relation(references: [id])
   media Media[]
+  categories Category[]
 
   @@index([domain], name: "domain")
   @@index([userId], name: "userId")
@@ -109,4 +110,14 @@ model Media {
 enum MediaType {
   image
   video
+}
+
+model Category {
+  id Int @default(autoincrement()) @id
+  createdAt  DateTime  @default(now()) @map(name: "created_at")
+  updatedAt  DateTime  @default(now()) @map(name: "updated_at")
+  slug String @unique
+  records Record[]
+
+  @@map(name: "categories")
 }

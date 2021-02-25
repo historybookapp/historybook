@@ -1,7 +1,7 @@
 import { NextApiHandler, NextApiResponse } from 'next'
 import Boom from '@hapi/boom'
 import joi from 'joi'
-import yup from 'yup'
+import { ValidationError } from 'yup'
 
 import { isDev } from './utils'
 
@@ -12,7 +12,7 @@ export default function handlerWrapper(
     try {
       await handler(req, res)
     } catch (err) {
-      console.error(err)
+      console.error('⚠️ ', err)
 
       if (Boom.isBoom(err)) {
         res.status(err.output.statusCode).send({
@@ -24,7 +24,7 @@ export default function handlerWrapper(
               }
             : null),
         })
-      } else if (err instanceof yup.ValidationError) {
+      } else if (err instanceof ValidationError) {
         res.status(400).send({
           code: 1,
           message: err.message,
@@ -50,7 +50,7 @@ export default function handlerWrapper(
         res.status(500).send({
           code: 1,
           message: typeof err === 'string' ? err : undefined,
-          data: typeof err !== 'string' && err,
+          data: typeof err !== 'string' ? err : undefined,
         })
       }
     }

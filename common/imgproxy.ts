@@ -1,5 +1,5 @@
 import Imgproxy from 'imgproxy'
-import envalid from 'envalid'
+import * as envalid from 'envalid'
 
 const { str } = envalid
 

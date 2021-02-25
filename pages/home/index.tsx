@@ -1,28 +1,73 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { Heading, Box, Text, Button } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { useEffect, useMemo, useState } from 'react'
 import tw, { css } from 'twin.macro'
 
+import CategoryList from '../../components/Home/CategoryList'
 import RecordList from '../../components/Home/RecordList'
 import SearchBox from '../../components/Home/SearchBox'
 import PageContainer from '../../components/PageContainer'
 import { SearchParams } from '../../types/api'
 
 const Page: NextPage = () => {
+  const router = useRouter()
   const [searchParams, setSearchParams] = useState<SearchParams>({})
-  const hasSearchKeys = Object.keys(searchParams).length > 0
+  const hasSearchKeys = useMemo(() => {
+    return searchParams.category || searchParams.keyword
+  }, [searchParams])
+
+  const changeRoute = (params: Partial<SearchParams>) => {
+    const urlParams = new URLSearchParams()
+
+    Object.keys(params).forEach((key) => {
+      const val = params[key]
+      if (typeof val !== 'undefined') {
+        urlParams.set(key, val)
+      }
+    })
+
+    router.push(`/home?${urlParams.toString()}`)
+  }
 
   const onSearch = (params: SearchParams) => {
-    setSearchParams((val) => ({
-      ...val,
+    changeRoute({
+      ...searchParams,
       ...params,
-    }))
+    })
+  }
+
+  const onSelectCategory = (category: string) => {
+    changeRoute({
+      ...searchParams,
+      category,
+    })
   }
 
   const onClearSearch = () => {
-    setSearchParams({})
+    changeRoute({})
   }
+
+  useEffect(() => {
+    const result: Partial<SearchParams> = {}
+
+    if (router.query.keyword) {
+      result.keyword = router.query.keyword as string
+    } else {
+      result.keyword = undefined
+    }
+    if (router.query.category) {
+      result.category = router.query.category as string
+    } else {
+      result.category = undefined
+    }
+
+    setSearchParams((val) => ({
+      ...val,
+      ...result,
+    }))
+  }, [router.query])
 
   return (
     <PageContainer>
@@ -38,13 +83,13 @@ const Page: NextPage = () => {
           h="100%"
           overflowY="scroll"
           css={[
-            tw`hidden md:block py-6 pl-2 pr-6`,
+            tw`hidden md:block py-6 pl-4 pr-6`,
             css`
               height: calc(((100vh - 1.5rem) - 64px) - 42px);
               overscroll-behavior: contain;
             `,
           ]}>
-          <p>Side bar</p>
+          <CategoryList selectCategory={onSelectCategory} />
         </Box>
 
         <Box flex="1" overflowY="scroll" tw="pr-6 md:pr-2 pl-6 pt-10 pb-10">
@@ -70,6 +115,12 @@ const Page: NextPage = () => {
               justifyContent="space-between"
               alignItems="center">
               <Box>
+                {searchParams.category ? (
+                  <Text>
+                    <b>Category:</b> {searchParams.category}
+                  </Text>
+                ) : undefined}
+
                 {searchParams.keyword ? (
                   <Text>
                     <b>Keyword:</b> {searchParams.keyword}

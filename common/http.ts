@@ -1,5 +1,7 @@
 import axios, { AxiosError } from 'axios'
 
+import { Category } from './category-helper'
+
 const httpClient = axios.create({
   baseURL: '/api',
   responseType: 'json',
@@ -19,6 +21,10 @@ export function getErrorMessage(err: Error): string {
     return err.message
   }
   return err.message
+}
+
+export function fetchCategoryList(): Promise<Category[]> {
+  return httpClient.get('/categories').then((res) => res.data)
 }
 
 export default httpClient

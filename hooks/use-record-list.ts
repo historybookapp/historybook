@@ -17,9 +17,11 @@ export default function useRecordList(searchParams: SearchParams = {}) {
       url.searchParams.set('nextCursor', pageParam)
     }
 
-    if (searchParams.keyword) {
-      url.searchParams.set('keyword', searchParams.keyword)
-    }
+    Object.keys(searchParams).forEach((key) => {
+      if (typeof searchParams[key] !== 'undefined') {
+        url.searchParams.set(key, <string>searchParams[key])
+      }
+    })
 
     return fetcher(url.toString())
   }

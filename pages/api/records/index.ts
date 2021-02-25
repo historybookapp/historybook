@@ -1,11 +1,11 @@
 import { NextApiHandler } from 'next'
 import Boom from '@hapi/boom'
 import { getSession, Session } from 'next-auth/client'
-import joi from 'joi'
 import _ from 'lodash'
-import yup from 'yup'
+import * as yup from 'yup'
 import { MediaType } from '@prisma/client'
 
+import categoryHelper from '../../../common/category-helper'
 import handlerWrapper, { sendOk } from '../../../common/handler-wrapper'
 import hashids from '../../../common/hashids'
 import prisma, { Prisma } from '../../../common/prisma'
@@ -36,6 +36,7 @@ const postHandler: NextApiHandler = async (req, res) => {
   const { media } = value
   const { hid } = session.user
   const userId = hashids.decode(hid)
+  const categories = await categoryHelper.getCategories(value.domain)
   const record: Prisma.RecordCreateInput = {
     ...value,
     userId,
@@ -47,27 +48,22 @@ const postHandler: NextApiHandler = async (req, res) => {
         url: undefined,
       })),
     },
+    ...(categories
+      ? {
+          categories: {
+            connect: categories.map((category) => ({
+              slug: category.slug,
+            })),
+          },
+        }
+      : null),
   }
 
-  const createRecord = await prisma.record.create({
+  await prisma.record.create({
     data: record,
-    include: {
-      media: {
-        select: {
-          name: true,
-          source: true,
-          mediaType: true,
-        },
-      },
-      tags: {
-        select: {
-          name: true,
-        },
-      },
-    },
   })
 
-  sendOk(res, sanitizeRecord(createRecord, 'card'))
+  sendOk(res)
 }
 
 const getHandler: NextApiHandler = async (req, res) => {
@@ -79,37 +75,65 @@ const getHandler: NextApiHandler = async (req, res) => {
     size: yup.number().positive().default(20),
     scene: yup.string().matches(/card/).default('card'),
     keyword: yup.string(),
+    category: yup.string(),
   })
   const query = await schema.validate(req.query)
-  const { nextCursor, size, scene, keyword } = query
+  const { nextCursor, size, scene, keyword, category } = query
   const nextRecordId = nextCursor
     ? hashids.decode(nextCursor as string)
+    : undefined
+  const include = {
+    media: {
+      select: {
+        name: true,
+        source: true,
+        mediaType: true,
+      },
+    },
+    tags: {
+      select: {
+        name: true,
+      },
+    },
+  }
+  const keywordFilter = keyword
+    ? {
+        OR: [
+          {
+            title: {
+              contains: keyword,
+            },
+          },
+          {
+            description: {
+              contains: keyword,
+            },
+          },
+          {
+            domain: {
+              contains: keyword,
+            },
+          },
+        ],
+      }
+    : undefined
+  const categoryFilter = category
+    ? {
+        categories: {
+          some: {
+            slug: {
+              contains: category,
+            },
+          },
+        },
+      }
     : undefined
 
   const findRecords = await prisma.record.findMany({
     where: {
       userId,
-      ...(keyword
-        ? {
-            OR: [
-              {
-                title: {
-                  contains: keyword,
-                },
-              },
-              {
-                description: {
-                  contains: keyword,
-                },
-              },
-              {
-                domain: {
-                  contains: keyword,
-                },
-              },
-            ],
-          }
-        : undefined),
+      ...keywordFilter,
+      ...categoryFilter,
     },
     take: size,
     skip: nextRecordId ? 1 : 0,
@@ -121,20 +145,7 @@ const getHandler: NextApiHandler = async (req, res) => {
     orderBy: {
       createdAt: 'desc',
     },
-    include: {
-      media: {
-        select: {
-          name: true,
-          source: true,
-          mediaType: true,
-        },
-      },
-      tags: {
-        select: {
-          name: true,
-        },
-      },
-    },
+    include,
   })
 
   const list = findRecords.map((record) =>

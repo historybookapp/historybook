@@ -17,6 +17,8 @@ export interface LookUpWebMedium {
 
 export interface SearchParams {
   keyword?: string
+  category?: string
+  [index: string]: string | undefined
 }
 
 export type MediaScene = 'card'
