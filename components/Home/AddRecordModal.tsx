@@ -108,7 +108,7 @@ const AddRecordModal: FC<Props> = ({ isOpen, onClose }) => {
               <ModalBody>
                 <Form>
                   <Field name="url" validate={validateURL}>
-                    {({ field, form }) => (
+                    {({ field, form }: any) => (
                       <FormControl
                         isInvalid={form.errors.url && form.touched.url}>
                         <Input

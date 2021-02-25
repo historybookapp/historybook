@@ -1,8 +1,10 @@
 import { NextApiHandler } from 'next'
 import Boom from '@hapi/boom'
-import { getSession } from 'next-auth/client'
+import { getSession, Session } from 'next-auth/client'
 import joi from 'joi'
 import _ from 'lodash'
+import yup from 'yup'
+import { MediaType } from '@prisma/client'
 
 import handlerWrapper, { sendOk } from '../../../common/handler-wrapper'
 import hashids from '../../../common/hashids'
@@ -11,23 +13,26 @@ import { sanitizeRecord } from '../../../common/utils'
 import { MediaScene } from '../../../types/api'
 
 const postHandler: NextApiHandler = async (req, res) => {
-  const session = await getSession({ req })
-  const schema = joi.object({
-    domain: joi.string().required(),
-    url: joi.string().required(),
-    title: joi.string().required(),
-    description: joi.string(),
-    favicon: joi.string(),
-    media: joi.array().items(
-      joi.object({
-        name: joi.string().required(),
-        source: joi.string().required(),
-        url: joi.string(),
-        mediaType: joi.string().valid('image', 'video'),
+  const session = (await getSession({ req })) as Session
+  const schema = yup.object().shape({
+    domain: yup.string().required(),
+    url: yup.string().required(),
+    title: yup.string().required(),
+    description: yup.string(),
+    favicon: yup.string(),
+    media: yup.array().of(
+      yup.object().shape({
+        name: yup.string().required(),
+        source: yup.string().required(),
+        url: yup.string(),
+        mediaType: yup
+          .string()
+          .matches(/(image|video)/)
+          .required(),
       }),
     ),
   })
-  const value = await schema.validateAsync(req.body)
+  const value = await schema.validate(req.body)
   const { media } = value
   const { hid } = session.user
   const userId = hashids.decode(hid)
@@ -35,9 +40,10 @@ const postHandler: NextApiHandler = async (req, res) => {
     ...value,
     userId,
     media: {
-      create: media.map((medium) => ({
+      create: (media || []).map((medium) => ({
         userId,
         ...medium,
+        mediaType: medium.mediaType as MediaType,
         url: undefined,
       })),
     },
@@ -65,16 +71,16 @@ const postHandler: NextApiHandler = async (req, res) => {
 }
 
 const getHandler: NextApiHandler = async (req, res) => {
-  const session = await getSession({ req })
+  const session = (await getSession({ req })) as Session
   const { hid } = session.user
   const userId = hashids.decode(hid)
-  const schema = joi.object({
-    nextCursor: joi.string(),
-    size: joi.number().min(0).default(20),
-    scene: joi.string().valid('card').default('card'),
-    keyword: joi.string(),
+  const schema = yup.object().shape({
+    nextCursor: yup.string(),
+    size: yup.number().positive().default(20),
+    scene: yup.string().matches(/card/).default('card'),
+    keyword: yup.string(),
   })
-  const query = await schema.validateAsync(req.query)
+  const query = await schema.validate(req.query)
   const { nextCursor, size, scene, keyword } = query
   const nextRecordId = nextCursor
     ? hashids.decode(nextCursor as string)
@@ -138,7 +144,7 @@ const getHandler: NextApiHandler = async (req, res) => {
 
   sendOk(res, {
     list,
-    nextCursor: list.length && isFullSize ? _.last(list).hid : null,
+    nextCursor: list.length && isFullSize ? _.last(list)?.hid : null,
   })
 }
 

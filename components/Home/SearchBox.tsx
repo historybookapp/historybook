@@ -24,7 +24,7 @@ const SearchBox: FC<{
 }> = ({ onSearch, searchParams }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  function validate(values): Record<string, string> {
+  function validate(values: Record<string, any>): Record<string, string> {
     const errors: {
       keyword?: string
     } = {}
@@ -68,7 +68,7 @@ const SearchBox: FC<{
                 <ModalBody>
                   <Form>
                     <Field name="keyword">
-                      {({ field, form }) => (
+                      {({ field, form }: any) => (
                         <FormControl
                           isInvalid={
                             form.errors.keyword && form.touched.keyword

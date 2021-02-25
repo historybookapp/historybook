@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios'
+import axios, { AxiosError } from 'axios'
 
 const httpClient = axios.create({
   baseURL: '/api',
@@ -11,7 +11,10 @@ export const fetcher = <T = any>(url: string) =>
 export function getErrorMessage(err: Error): string {
   if (axios.isAxiosError(err)) {
     if (err.response) {
-      return (err as AxiosError<{ message: string }>).response.data.message
+      return (
+        (err as AxiosError<{ message: string }>).response?.data.message ||
+        'Unable to parse the API response.'
+      )
     }
     return err.message
   }

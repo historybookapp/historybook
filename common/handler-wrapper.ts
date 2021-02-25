@@ -1,6 +1,7 @@
 import { NextApiHandler, NextApiResponse } from 'next'
 import Boom from '@hapi/boom'
 import joi from 'joi'
+import yup from 'yup'
 
 import { isDev } from './utils'
 
@@ -22,6 +23,12 @@ export default function handlerWrapper(
                 stack: err.stack,
               }
             : null),
+        })
+      } else if (err instanceof yup.ValidationError) {
+        res.status(400).send({
+          code: 1,
+          message: err.message,
+          data: err.errors,
         })
       } else if (joi.isError(err)) {
         res.status(400).send({

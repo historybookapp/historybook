@@ -11,20 +11,23 @@ export const getImages = (
 ): LookUpWebMedium[] => {
   const imageArray = Array.isArray(data) ? data : [data]
   const site = new URL(siteURL)
+  const result: ReturnType<typeof getImages> = []
 
-  return imageArray.map(
-    (item): LookUpWebMedium => {
-      let { url } = item
+  imageArray.forEach((item) => {
+    if (!item) return
 
-      if (url.startsWith('/')) {
-        url = `${site.origin}${url}`
-      }
+    let { url } = item
 
-      return {
-        source: url,
-        mediaType: 'image',
-        name: 'image',
-      }
-    },
-  )
+    if (url.startsWith('/')) {
+      url = `${site.origin}${url}`
+    }
+
+    result.push({
+      source: url,
+      mediaType: 'image',
+      name: 'image',
+    })
+  })
+
+  return result
 }

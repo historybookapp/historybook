@@ -26,7 +26,7 @@ const getHandler: NextApiHandler = async (req, res) => {
     },
   }).catch((data) => data)
 
-  if (og.error === true) {
+  if (og.error) {
     throw Boom.badRequest('Could not retrieve information from this url.')
   }
 

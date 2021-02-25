@@ -1,14 +1,17 @@
 import Imgproxy from 'imgproxy'
+import envalid from 'envalid'
 
-import { singletonSync } from './singleton'
+const { str } = envalid
 
-const imgproxy = singletonSync('imgproxy', () => {
-  return new Imgproxy({
-    baseUrl: process.env.IMGPROXY_SERVER,
-    key: process.env.IMGPROXY_KEY,
-    salt: process.env.IMGPROXY_SALT,
-    encode: true,
-  })
+const env = envalid.cleanEnv(process.env, {
+  IMGPROXY_SERVER: str(),
+  IMGPROXY_KEY: str(),
+  IMGPROXY_SALT: str(),
 })
 
-export default imgproxy
+export default new Imgproxy({
+  baseUrl: env.IMGPROXY_SERVER,
+  key: env.IMGPROXY_KEY,
+  salt: env.IMGPROXY_SALT,
+  encode: true,
+})

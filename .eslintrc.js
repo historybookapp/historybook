@@ -8,10 +8,11 @@ module.exports = {
   },
   plugins: ['react', 'react-hooks', 'jsx-a11y', '@typescript-eslint'],
   extends: [
+    'plugin:prettier/recommended',
     'airbnb',
     'airbnb-typescript',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
+    'prettier',
   ],
   rules: {
     'prettier/prettier': 'error',

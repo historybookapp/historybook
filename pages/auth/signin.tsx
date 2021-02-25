@@ -1,9 +1,10 @@
 import { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
 import tw, { css } from 'twin.macro'
-import { useSession, signIn, csrfToken } from 'next-auth/client'
+import { signIn, getCsrfToken } from 'next-auth/client'
 import { Input, Button, FormControl, FormErrorMessage } from '@chakra-ui/react'
 import { Formik, Form, Field } from 'formik'
+import Boom from '@hapi/boom'
 
 const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
   props,
@@ -49,7 +50,7 @@ const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
             {(f) => (
               <Form>
                 <Field name="email" validate={validateEmail}>
-                  {({ field, form }) => (
+                  {({ field, form }: any) => (
                     <FormControl
                       isInvalid={form.errors.email && form.touched.email}>
                       <Input
@@ -81,10 +82,16 @@ const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
 
 export const getServerSideProps: GetServerSideProps<{
   csrfToken: string
-}> = async (context) => {
+}> = async ({ req }) => {
+  const csrfToken = await getCsrfToken({ req })
+
+  if (!csrfToken) {
+    throw Boom.badImplementation('Could not generate csrfToken.')
+  }
+
   return {
     props: {
-      csrfToken: await csrfToken(context),
+      csrfToken,
     },
   }
 }
