@@ -48,6 +48,7 @@ const RecordItem: FC<Props> = ({ record, clickable = true }) => {
         borderRadius="lg"
         overflow="hidden"
         d="flex"
+        tw="flex-col md:flex-row"
         css={[
           clickable &&
             css`
@@ -84,7 +85,12 @@ const RecordItem: FC<Props> = ({ record, clickable = true }) => {
         </Box>
 
         {record.media.length ? (
-          <Box flex={1} ml={4} d="flex" alignItems="center">
+          <Box
+            flex={1}
+            d="flex"
+            tw="ml-0 mt-3 md:mt-0 md:ml-4"
+            alignItems="center"
+            justifyContent="center">
             <AspectRatio w="180px" ratio={4 / 3}>
               <Image
                 src={
