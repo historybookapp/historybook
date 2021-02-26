@@ -14,6 +14,15 @@ const colors = {
     900: '#1d0500',
   },
 }
-const theme = extendTheme({ colors })
+const styles = {
+  global: {
+    'html, body': {
+      fontFamily:
+        'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+    },
+  },
+}
+
+const theme = extendTheme({ styles, colors })
 
 export default theme
