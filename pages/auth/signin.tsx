@@ -1,14 +1,25 @@
 import { NextPage, GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import tw, { css } from 'twin.macro'
-import { signIn, getCsrfToken } from 'next-auth/client'
+import {
+  signIn,
+  getCsrfToken,
+  getProviders,
+  SessionProvider,
+} from 'next-auth/client'
 import { Input, Button, FormControl, FormErrorMessage } from '@chakra-ui/react'
 import { Formik, Form, Field } from 'formik'
 import Boom from '@hapi/boom'
 
-const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
-  props,
-) => {
+const Page: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ csrfToken, providers }) => {
+  const router = useRouter()
+  const callbackUrl =
+    (router.query.callbackUrl as string | undefined) ||
+    `${window.location.origin}/home`
+
   function validateEmail(value: string): string | undefined {
     let error
     if (!value) {
@@ -20,7 +31,7 @@ const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
   }
 
   async function signInWithEmail(email: string): Promise<void> {
-    await signIn('email', { email, csrfToken: props.csrfToken })
+    await signIn('email', { email, csrfToken, callbackUrl })
   }
 
   return (
@@ -40,6 +51,7 @@ const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
 
         <div tw="mt-10">
           <Formik
+            validateOnBlur={false}
             initialValues={{ email: '' }}
             onSubmit={(values, actions) => {
               actions.setSubmitting(true)
@@ -55,7 +67,6 @@ const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                       isInvalid={form.errors.email && form.touched.email}>
                       <Input
                         {...field}
-                        autoFocus
                         required
                         type="email"
                         placeholder="john@appleseed.com"
@@ -66,7 +77,7 @@ const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                 </Field>
                 <Button
                   tw="mt-4"
-                  colorScheme="green"
+                  colorScheme="brand"
                   isLoading={f.isSubmitting}
                   type="submit">
                   Sign in with email
@@ -74,6 +85,34 @@ const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
               </Form>
             )}
           </Formik>
+
+          <hr tw="mt-5" />
+
+          <div tw="space-y-5 flex flex-col items-center justify-center">
+            {Object.keys(providers).map((key) => {
+              const provider = providers[key]
+
+              return (
+                <div key={key}>
+                  {provider.type === 'oauth' && (
+                    <form action={provider.signinUrl} method="POST">
+                      <input type="hidden" name="csrfToken" value={csrfToken} />
+                      {callbackUrl && (
+                        <input
+                          type="hidden"
+                          name="callbackUrl"
+                          value={callbackUrl}
+                        />
+                      )}
+                      <Button type="submit" tw="">
+                        Sign in with {provider.name}
+                      </Button>
+                    </form>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         </div>
       </main>
     </div>
@@ -82,16 +121,25 @@ const Page: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
 
 export const getServerSideProps: GetServerSideProps<{
   csrfToken: string
+  providers: {
+    [provider: string]: SessionProvider
+  }
 }> = async ({ req }) => {
   const csrfToken = await getCsrfToken({ req })
+  const providers = await getProviders()
 
   if (!csrfToken) {
     throw Boom.badImplementation('Could not generate csrfToken.')
   }
 
+  if (!providers) {
+    throw Boom.badImplementation('Could not get providers.')
+  }
+
   return {
     props: {
       csrfToken,
+      providers,
     },
   }
 }
