@@ -8,7 +8,13 @@ import {
   getProviders,
   SessionProvider,
 } from 'next-auth/client'
-import { Input, Button, FormControl, FormErrorMessage } from '@chakra-ui/react'
+import {
+  Input,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  Text,
+} from '@chakra-ui/react'
 import { Formik, Form, Field } from 'formik'
 import Boom from '@hapi/boom'
 
@@ -18,7 +24,23 @@ const Page: NextPage<
   const router = useRouter()
   const callbackUrl =
     (router.query.callbackUrl as string | undefined) ||
-    `${window.location.origin}/home`
+    `${process.env.NEXT_PUBLIC_SITE}/home`
+  const loginError = router.query.error as string | undefined
+
+  const loginErrors: { [key: string]: string } = {
+    Signin: 'Try signing with a different account.',
+    OAuthSignin: 'Try signing with a different account.',
+    OAuthCallback: 'Try signing with a different account.',
+    OAuthCreateAccount: 'Try signing with a different account.',
+    EmailCreateAccount: 'Try signing with a different account.',
+    Callback: 'Try signing with a different account.',
+    OAuthAccountNotLinked:
+      'To confirm your identity, sign in with the same account you used originally.',
+    EmailSignin: 'Check your email address.',
+    CredentialsSignin:
+      'Sign in failed. Check the details you provided are correct.',
+    default: 'Unable to sign in.',
+  }
 
   function validateEmail(value: string): string | undefined {
     let error
@@ -49,7 +71,16 @@ const Page: NextPage<
       <main tw="max-w-xl w-full mx-auto px-10 justify-center items-center">
         <h1 tw="text-3xl font-bold text-center">Sign in</h1>
 
-        <div tw="mt-10">
+        <div tw="mt-7">
+          {loginError && (
+            <Text
+              tw="px-5 py-3 mb-7 rounded-md font-bold"
+              color="red.700"
+              bg="red.50">
+              {loginErrors[loginError] || 'An error occurred.'}
+            </Text>
+          )}
+
           <Formik
             validateOnBlur={false}
             initialValues={{ email: '' }}
@@ -97,13 +128,7 @@ const Page: NextPage<
                   {provider.type === 'oauth' && (
                     <form action={provider.signinUrl} method="POST">
                       <input type="hidden" name="csrfToken" value={csrfToken} />
-                      {callbackUrl && (
-                        <input
-                          type="hidden"
-                          name="callbackUrl"
-                          value={callbackUrl}
-                        />
-                      )}
+
                       <Button type="submit" tw="">
                         Sign in with {provider.name}
                       </Button>

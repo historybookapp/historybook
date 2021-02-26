@@ -9,7 +9,7 @@ import categoryHelper from '../../../common/category-helper'
 import handlerWrapper, { sendOk } from '../../../common/handler-wrapper'
 import hashids from '../../../common/hashids'
 import prisma, { Prisma } from '../../../common/prisma'
-import { sanitizeRecord } from '../../../common/utils'
+import { sanitizeRecord } from '../../../common/server-utils'
 import { MediaScene } from '../../../types/api'
 
 const postHandler: NextApiHandler = async (req, res) => {

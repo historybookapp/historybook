@@ -81,6 +81,28 @@ export const getServerSideProps: GetServerSideProps = async ({
   res,
 }) => {
   const error = (query.error as string | undefined) || 'default'
+
+  if (
+    [
+      'Signin',
+      'OAuthSignin',
+      'OAuthCallback',
+      'OAuthCreateAccount',
+      'EmailCreateAccount',
+      'Callback',
+      'OAuthAccountNotLinked',
+      'EmailSignin',
+      'CredentialsSignin',
+    ].includes(error)
+  ) {
+    return {
+      redirect: {
+        destination: `${process.env.NEXT_PUBLIC_SITE}/auth/signin?error=${error}`,
+        permanent: false,
+      },
+    }
+  }
+
   const errors: {
     [key: string]: {
       statusCode: number

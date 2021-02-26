@@ -6,7 +6,7 @@ import ogs from 'open-graph-scraper'
 
 import handlerWrapper, { sendOk } from '../../../common/handler-wrapper'
 import { getImages } from '../../../common/open-graph'
-import { proxyMedia } from '../../../common/utils'
+import { proxyMedia } from '../../../common/server-utils'
 import { LookUpWebMedium, LookUpWebResponse } from '../../../types/api'
 
 const getHandler: NextApiHandler = async (req, res) => {
