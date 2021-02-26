@@ -1,5 +1,5 @@
-import { NextPage } from 'next'
-import Head from 'next/head'
+import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
+import { getSession } from 'next-auth/client'
 import { Heading, Box, Text, Button } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
@@ -11,7 +11,9 @@ import SearchBox from '../../components/Home/SearchBox'
 import PageContainer from '../../components/PageContainer'
 import { SearchParams } from '../../types/api'
 
-const Page: NextPage = () => {
+const Page: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = () => {
   const router = useRouter()
   const [searchParams, setSearchParams] = useState<SearchParams>({})
   const hasSearchKeys = useMemo(() => {
@@ -70,12 +72,8 @@ const Page: NextPage = () => {
   }, [router.query])
 
   return (
-    <PageContainer>
-      <Head>
-        <title>Home</title>
-      </Head>
-
-      <div tw="w-full max-w-7xl mx-auto flex md:px-4">
+    <PageContainer title="Home">
+      <div tw="flex md:px-4">
         <Box
           position="sticky"
           top="6rem"
@@ -141,6 +139,23 @@ const Page: NextPage = () => {
       </div>
     </PageContainer>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req })
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {},
+  }
 }
 
 export default Page

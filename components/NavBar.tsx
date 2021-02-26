@@ -1,12 +1,27 @@
+import { useSession, signOut } from 'next-auth/client'
 import { FC } from 'react'
 import tw, { css } from 'twin.macro'
-import { Heading, IconButton, useDisclosure, Box } from '@chakra-ui/react'
+import {
+  Heading,
+  IconButton,
+  useDisclosure,
+  Box,
+  Avatar,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuGroup,
+  MenuDivider,
+} from '@chakra-ui/react'
 import { PlusSquareIcon } from '@chakra-ui/icons'
+import Link from 'next/link'
 
 import AddRecordModal from './Home/AddRecordModal'
 
 const NavBar: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [session] = useSession()
 
   return (
     <Box
@@ -25,7 +40,7 @@ const NavBar: FC = () => {
           Historybook
         </Heading>
 
-        <div>
+        <div tw="flex items-center space-x-5">
           <IconButton
             onClick={() => onOpen()}
             colorScheme="brand"
@@ -34,6 +49,32 @@ const NavBar: FC = () => {
             borderRadius="10px"
             icon={<PlusSquareIcon />}
           />
+
+          {session && (
+            <Menu>
+              <MenuButton>
+                <Avatar
+                  bg="gray.300"
+                  name={session.user.name || undefined}
+                  src={session.user.image || undefined}
+                />
+              </MenuButton>
+              <MenuList>
+                <MenuGroup title="Profile">
+                  <Link href="/profile">
+                    <MenuItem>My Account</MenuItem>
+                  </Link>
+                </MenuGroup>
+                <MenuDivider />
+                <MenuGroup title="Help">
+                  <MenuItem>Docs</MenuItem>
+                  <MenuItem>FAQ</MenuItem>
+                </MenuGroup>
+                <MenuDivider />
+                <MenuItem onClick={() => signOut()}>Sign out</MenuItem>
+              </MenuList>
+            </Menu>
+          )}
         </div>
       </nav>
 

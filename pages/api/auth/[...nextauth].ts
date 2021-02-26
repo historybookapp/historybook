@@ -3,6 +3,7 @@ import NextAuth from 'next-auth'
 import Providers from 'next-auth/providers'
 import Adapters from 'next-auth/adapters'
 import * as envalid from 'envalid'
+import * as gravatar from 'gravatar'
 
 import hashids from '../../../common/hashids'
 import prisma from '../../../common/prisma'
@@ -44,6 +45,16 @@ const handler: NextApiHandler = (req, res) =>
       async session(session, user) {
         // eslint-disable-next-line no-param-reassign
         session.user.hid = hashids.encode((user as any).id as number)
+
+        if (!session.user.image && session.user.email) {
+          // eslint-disable-next-line no-param-reassign
+          session.user.image = gravatar.url(
+            session.user.email,
+            { s: '100', default: '404' },
+            true,
+          )
+        }
+
         return session
       },
     },
