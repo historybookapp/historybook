@@ -32,6 +32,7 @@ export default function handlerWrapper(
           origin(origin, callback) {
             const whitelist = [
               'https://historybook.link',
+              'https://historybook.vercel.app',
               'http://localhost:3000',
             ]
 
