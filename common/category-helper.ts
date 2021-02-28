@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as recordCategory from '@historybookapp/record-category'
 import { singletonSync } from './singleton'
 
@@ -22,7 +21,7 @@ class CategoryHelper {
 
   constructor() {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires,import/no-extraneous-dependencies,global-require
+      // eslint-disable-next-line @typescript-eslint/no-var-requires,global-require
       this.extension = require('@historybookapp/record-category')
     } catch (err) {
       // no catch

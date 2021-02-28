@@ -843,6 +843,13 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
+"@historybookapp/record-category@^0.1.0":
+  version "0.1.0"
+  resolved "https://npm.pkg.github.com/download/@historybookapp/record-category/0.1.0/5280b59a5a69cf437f01a54175250df5028cf60ff9f65d8c5e2de7b7f183b693#3bc16dd77ab670f3216017e59dca547f1d763fee"
+  integrity sha1-O8Ft13q2cPMhYBflncpUfx12P+4=
+  dependencies:
+    psl "^1.8.0"
+
 "@loadable/component@^5.14.1":
   version "5.14.1"
   resolved "https://registry.yarnpkg.com/@loadable/component/-/component-5.14.1.tgz#cacd807162430bb85ae085945318027a600adc85"
@@ -4621,6 +4628,11 @@ property-expr@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/property-expr/-/property-expr-2.0.4.tgz#37b925478e58965031bb612ec5b3260f8241e910"
   integrity sha512-sFPkHQjVKheDNnPvotjQmm3KD3uk1fWKUN7CrpdbwmUx3CrG3QiM8QpTSimvig5vTXmTvjz7+TDvXOI9+4rkcg==
+
+psl@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/psl/-/psl-1.8.0.tgz#9326f8bcfb013adcc005fdff056acce020e51c24"
+  integrity sha512-RIdOzyoavK+hA18OGGWDqUTsCLhtA7IcZ/6NCs4fFJaHBDab+pDDmDIByWFRQJq2Cd7r1OoQxBGKOaztq+hjIQ==
 
 public-encrypt@^4.0.0:
   version "4.0.3"

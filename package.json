@@ -18,6 +18,7 @@
     "@emotion/server": "^11.0.0",
     "@emotion/styled": "^11.1.5",
     "@hapi/boom": "^9.1.1",
+    "@historybookapp/record-category": "^0.1.0",
     "@loadable/component": "^5.14.1",
     "@prisma/client": "^2.17.0",
     "axios": "^0.21.1",
@@ -71,6 +72,5 @@
     "prettier": "^2.2.1",
     "prisma": "^2.17.0",
     "typescript": "^4.2.2"
-  },
-  "optionalDependencies": {}
+  }
 }
