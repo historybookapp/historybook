@@ -51,7 +51,7 @@ const SearchBox: FC<{
         icon={<SearchIcon />}
       />
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Search history</ModalHeader>

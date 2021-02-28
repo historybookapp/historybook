@@ -130,6 +130,7 @@ const Page: NextPage<
 
             <div tw="space-x-5">
               <IconButton
+                tw="inline-flex md:hidden"
                 onClick={() => onOpen()}
                 aria-label="Open side bar"
                 icon={<HamburgerIcon />}
