@@ -14,13 +14,17 @@ import {
   MenuGroup,
   MenuDivider,
 } from '@chakra-ui/react'
-import { PlusSquareIcon } from '@chakra-ui/icons'
+import { PlusSquareIcon, HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
 import Link from 'next/link'
 
 import AddRecordModal from './Home/AddRecordModal'
 
 const NavBar: FC = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isAddRecordModalOpen,
+    onOpen: onAddRecordModalOpen,
+    onClose: onAddRecordModalClose,
+  } = useDisclosure()
   const [session] = useSession()
 
   return (
@@ -42,7 +46,7 @@ const NavBar: FC = () => {
 
         <div tw="flex items-center space-x-5">
           <IconButton
-            onClick={() => onOpen()}
+            onClick={() => onAddRecordModalOpen()}
             colorScheme="brand"
             aria-label="SearchBox database"
             fontSize="25px"
@@ -78,7 +82,10 @@ const NavBar: FC = () => {
         </div>
       </nav>
 
-      <AddRecordModal isOpen={isOpen} onClose={onClose} />
+      <AddRecordModal
+        isOpen={isAddRecordModalOpen}
+        onClose={onAddRecordModalClose}
+      />
     </Box>
   )
 }

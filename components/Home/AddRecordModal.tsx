@@ -85,7 +85,7 @@ const AddRecordModal: FC<Props> = ({ isOpen, onClose }) => {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onCloseHandler} size="xl">
+    <Modal isCentered isOpen={isOpen} onClose={onCloseHandler} size="xl">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Add New Record</ModalHeader>

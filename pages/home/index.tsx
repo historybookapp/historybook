@@ -1,9 +1,18 @@
 import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
 import { getSession } from 'next-auth/client'
-import { Heading, Box, Text, Button } from '@chakra-ui/react'
+import {
+  Heading,
+  Box,
+  Text,
+  Button,
+  useDisclosure,
+  IconButton,
+} from '@chakra-ui/react'
+import { HamburgerIcon } from '@chakra-ui/icons'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import tw, { css } from 'twin.macro'
+import loadable from '@loadable/component'
 
 import CategoryList from '../../components/Home/CategoryList'
 import RecordList from '../../components/Home/RecordList'
@@ -11,9 +20,12 @@ import SearchBox from '../../components/Home/SearchBox'
 import PageContainer from '../../components/PageContainer'
 import { SearchParams } from '../../types/api'
 
+const SideDrawer = loadable(() => import('../../components/Home/SideDrawer'))
+
 const Page: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
   const [searchParams, setSearchParams] = useState<SearchParams>({})
   const hasSearchKeys = useMemo(() => {
@@ -41,6 +53,7 @@ const Page: NextPage<
   }
 
   const onSelectCategory = (category: string) => {
+    onClose()
     changeRoute({
       ...searchParams,
       category,
@@ -78,7 +91,6 @@ const Page: NextPage<
           position="sticky"
           top="6rem"
           w="300px"
-          h="100%"
           overflowY="scroll"
           css={[
             tw`hidden md:block py-6 pl-4 pr-6`,
@@ -90,7 +102,24 @@ const Page: NextPage<
           <CategoryList selectCategory={onSelectCategory} />
         </Box>
 
-        <Box flex="1" overflowY="scroll" tw="pr-6 md:pr-2 pl-6 pt-10 pb-10">
+        <Box css={[tw`block md:hidden`]}>
+          <SideDrawer
+            isOpen={isOpen}
+            onOpen={onOpen}
+            onClose={onClose}
+            selectCategory={onSelectCategory}
+          />
+        </Box>
+
+        <Box
+          flex="1"
+          overflowY="scroll"
+          css={[
+            tw`pr-6 md:pr-2 pl-6 pt-10 pb-10`,
+            css`
+              min-height: calc(100vh - 4.5rem);
+            `,
+          ]}>
           <Heading
             as="h2"
             size="md"
@@ -99,7 +128,15 @@ const Page: NextPage<
             alignItems="center">
             <span>My History</span>
 
-            <SearchBox searchParams={searchParams} onSearch={onSearch} />
+            <div tw="space-x-5">
+              <IconButton
+                onClick={() => onOpen()}
+                aria-label="Open side bar"
+                icon={<HamburgerIcon />}
+              />
+
+              <SearchBox searchParams={searchParams} onSearch={onSearch} />
+            </div>
           </Heading>
 
           {hasSearchKeys && (
