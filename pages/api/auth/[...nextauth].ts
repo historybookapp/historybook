@@ -7,6 +7,7 @@ import * as gravatar from 'gravatar'
 
 import hashids from '../../../common/hashids'
 import prisma from '../../../common/prisma'
+import { second } from '../../../common/utils'
 
 const { str } = envalid
 const env = envalid.cleanEnv(process.env, {
@@ -29,6 +30,7 @@ const handler: NextApiHandler = (req, res) =>
       Providers.GitHub({
         clientId: env.GITHUB_CLIENT_ID,
         clientSecret: env.GITHUB_CLIENT_SECRET,
+        scope: 'user:read',
       }),
       Providers.Google({
         clientId: env.GOOGLE_CLIENT_ID,
@@ -40,6 +42,9 @@ const handler: NextApiHandler = (req, res) =>
       signIn: '/auth/signin',
       error: '/auth/error',
       verifyRequest: '/auth/verify-request',
+    },
+    session: {
+      maxAge: second('6 months'),
     },
     callbacks: {
       async session(session, user) {
