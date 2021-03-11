@@ -44,7 +44,7 @@ export default function useRecordList(searchParams: SearchParams = {}) {
     nextCursor: string | null
   }>(['recordList', searchParams], fetchRecordList, {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   })
 
   return {
