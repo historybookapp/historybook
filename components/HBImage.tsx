@@ -18,10 +18,10 @@ const Fallback: FC = () => {
   )
 }
 
-const Image = forwardRef<ImageProps, 'img'>((props, ref) => (
+const HBImage = forwardRef<ImageProps, 'img'>((props, ref) => (
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   <OriginalImage ref={ref} {...props} fallback={<Fallback />} />
 ))
 
-export default Image
+export default HBImage
