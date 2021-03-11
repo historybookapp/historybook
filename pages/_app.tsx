@@ -4,14 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import '../styles/base.css'
-import { isServer } from '../common/utils'
 import theme from '../styles/theme'
-
-if (isServer()) {
-  if (!process.env.NEXT_PUBLIC_SITE) {
-    throw new Error('Please define NEXT_PUBLIC_SITE in your .env file!')
-  }
-}
 
 const queryClient = new QueryClient()
 
