@@ -76,9 +76,10 @@ const getHandler: NextApiHandler = async (req, res) => {
     scene: yup.string().matches(/card/).default('card'),
     keyword: yup.string(),
     category: yup.string(),
+    domain: yup.string(),
   })
   const query = await schema.validate(req.query)
-  const { nextCursor, size, scene, keyword, category } = query
+  const { nextCursor, size, scene, keyword, category, domain } = query
   const nextRecordId = nextCursor
     ? hashids.decode(nextCursor as string)
     : undefined
@@ -109,11 +110,6 @@ const getHandler: NextApiHandler = async (req, res) => {
               contains: keyword,
             },
           },
-          {
-            domain: {
-              contains: keyword,
-            },
-          },
         ],
       }
     : undefined
@@ -128,12 +124,28 @@ const getHandler: NextApiHandler = async (req, res) => {
         },
       }
     : undefined
+  const domainFilter = domain
+    ? {
+        domain: {
+          equals: domain,
+        },
+      }
+    : undefined
+
+  if (!domain && keywordFilter) {
+    keywordFilter.OR.push({
+      domain: {
+        contains: keyword,
+      },
+    } as any)
+  }
 
   const findRecords = await prisma.record.findMany({
     where: {
       userId,
       ...keywordFilter,
       ...categoryFilter,
+      ...domainFilter,
     },
     take: size,
     skip: nextRecordId ? 1 : 0,

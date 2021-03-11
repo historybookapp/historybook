@@ -6,6 +6,13 @@ import { SearchParams } from '../types/api'
 
 const pageSize = 15
 
+export type RecordListItem = Prisma.RecordGetPayload<{
+  include: {
+    media: true
+    tags: true
+  }
+}> & { hid: string }
+
 export default function useRecordList(searchParams: SearchParams = {}) {
   function fetchRecordList({ pageParam }: { pageParam?: string }) {
     const url = new URL(
@@ -35,12 +42,7 @@ export default function useRecordList(searchParams: SearchParams = {}) {
     isFetchingNextPage,
     status,
   } = useInfiniteQuery<{
-    list: (Prisma.RecordGetPayload<{
-      include: {
-        media: true
-        tags: true
-      }
-    }> & { hid: string })[]
+    list: RecordListItem[]
     nextCursor: string | null
   }>(['recordList', searchParams], fetchRecordList, {
     getNextPageParam: (lastPage) => lastPage.nextCursor,

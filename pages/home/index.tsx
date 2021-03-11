@@ -29,7 +29,7 @@ const Page: NextPage<
   const router = useRouter()
   const [searchParams, setSearchParams] = useState<SearchParams>({})
   const hasSearchKeys = useMemo(() => {
-    return searchParams.category || searchParams.keyword
+    return searchParams.category || searchParams.keyword || searchParams.domain
   }, [searchParams])
 
   const changeRoute = (params: Partial<SearchParams>) => {
@@ -42,7 +42,9 @@ const Page: NextPage<
       }
     })
 
-    router.push(`/home?${urlParams.toString()}`)
+    const urlParamsString = urlParams.toString()
+
+    router.push(`/home${urlParamsString ? `?${urlParamsString}` : ''}`)
   }
 
   const onSearch = (params: SearchParams) => {
@@ -77,7 +79,12 @@ const Page: NextPage<
     } else {
       result.category = undefined
     }
-
+    if (router.query.domain) {
+      result.domain = router.query.domain as string
+    } else {
+      result.domain = undefined
+    }
+    console.log(result)
     setSearchParams((val) => ({
       ...val,
       ...result,
@@ -160,6 +167,12 @@ const Page: NextPage<
                 {searchParams.keyword ? (
                   <Text>
                     <b>Keyword:</b> {searchParams.keyword}
+                  </Text>
+                ) : undefined}
+
+                {searchParams.domain ? (
+                  <Text>
+                    <b>Domain:</b> {searchParams.domain}
                   </Text>
                 ) : undefined}
               </Box>

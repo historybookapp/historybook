@@ -27,4 +27,8 @@ export function fetchCategoryList(): Promise<Category[]> {
   return httpClient.get('/categories').then((res) => res.data)
 }
 
+export function deleteRecord(id: string): Promise<void> {
+  return httpClient.delete(`/records/${id}`).then((res) => res.data)
+}
+
 export default httpClient

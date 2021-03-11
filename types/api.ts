@@ -1,4 +1,5 @@
 export interface LookUpWebResponse {
+  hid?: string
   domain: string
   url: string
   favicon?: string
@@ -18,6 +19,7 @@ export interface LookUpWebMedium {
 export interface SearchParams {
   keyword?: string
   category?: string
+  domain?: string
   [index: string]: string | undefined
 }
 
